@@ -1,24 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useEffect, useState} from 'react';
+import {Route, Link, Routes} from 'react-router-dom';
+import Categories from "./Components/Categories";
+import Books from "./Components/Books"
+import BooksService from "./Service/BooksService";
+import Navbar from "./Components/Navbar";
+
 
 function App() {
+    const [books, setBooks] = useState([]);
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        BooksService.fetchAllBooks().then((data) => {
+            setBooks(data.data);
+        });
+
+        BooksService.fetchCategories().then((data) => {
+            setCategories(data.data);
+        })
+    }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className='App'>
+          <Navbar></Navbar>
+        <Routes>
+            <Route exact path='/books' element={<Books books={books}/>}></Route>
+            <Route exact path={'/categories'} element={<Categories categories={categories}/>}></Route>
+            <Route exact path='/' element={<Books books={books}/>}></Route>
+        </Routes>
+
+      </div>
   );
 }
 
